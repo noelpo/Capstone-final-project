@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Atm Finder</title>
+
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/app.css">
+    {% block css %} {% endblock%}
+  </head>
+  <body>
+   
+    <button id = "find-me">Show my location</button><br/>
+    <p id = "status"></p>
+    <a id = "map-link" target="_blank"></a>
+    <div id="dvMap" style="width: 500px; height: 500px">
+
+
+    <script>
+      function geoFindMe() {
+
+        const status = document.querySelector('#status');
+        const mapLink = document.querySelector('#map-link');
+
+        mapLink.href = '';
+        mapLink.textContent = '';
+
+        function success(position) {
+          const latitude  = position.coords.latitude;
+          const longitude = position.coords.longitude;
+
+          status.textContent = '';
+          mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+          mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+        }
+
+        function error() {
+          status.textContent = 'Unable to retrieve your location';
+        }
+
+        if(!navigator.geolocation) {
+          status.textContent = 'Geolocation is not supported by your browser';
+        } else {
+          status.textContent = 'Locating…';
+          navigator.geolocation.getCurrentPosition(success, error);
+        }
+
+      }
+      if (navigator.geolocation) {
+
+
+        navigator.geolocation.getCurrentPosition(function (p) {
+
+
+          var LatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
+
+          var mapOptions = {
+
+          center: LatLng,
+
+          zoom: 13,
+
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+
+        };
+
+        var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+
+        var marker = new google.maps.Marker({
+
+
+          position: LatLng,
+
+          map: map,
+
+          title: "<div style = 'height:60px;width:200px'><b>Your location:</b><br />Latitude: " + p.coords.latitude + "<br />Longitude: " + p.coords.longitude
+
+        });
+
+        google.maps.event.addListener(marker, "click", function (e) {
+
+          var infoWindow = new google.maps.InfoWindow();
+
+          infoWindow.setContent(marker.title);
+
+          infoWindow.open(map, marker);
+
+        });
+
+      });
+
+    } else {
+
+    alert('Geo Location feature is not supported in this browser.');
+
+    }
+
+        document.querySelector('#find-me').addEventListener('click', geoFindMe);
+    </script>
+  </body>
+</html>

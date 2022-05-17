@@ -1,22 +1,83 @@
-var img = document.createElement("img");
-var smile = document.getElementById("smile")
+function getNameUserONeachVisit() {
+        
+    var nameOfUserInEachVisitInLclStorage;
 
-document.querySelector("#atm").addEventListener("click",()=>{
-  console.log("yehey")
+    
+    var nameOfUserInEachVisitInLclStorage = localStorage.getItem("nameOfUserInEachVisitInLclStorage");
 
-  let atmstatus = "working"
-  img.src = (atmstatus == "working")? "https://cdn.shopify.com/s/files/1/1061/1924/products/16_large.png?v=1571606116" : "https://hotemoji.com/images/emoji/m/1dssedz11rcxjm.png"
-  smile.innerHTML += '<img  width="100" height="100" src="'+img. src+'" />';
-}) 
 
-Query( document ).ready( function( $ ) {
-  //Welcome Message
-  //If this is the user's first time on the site, make a json call
-  //and insert a welcome message above the QA menu
-  if ( $.cookie( welcome_message.cookie ) == null ) {
-    $( welcome_message.prepend ).prepend( '<div id="' + welcome_message.div + '">' + welcome_message.message + '</div>' );
-    $( '#' + welcome_message.div ).fadeIn('slow');
-    $.cookie( welcome_message.cookie, '1', { expires: parseInt( welcome_message.expiration ), path: '/', domain: welcome_message.domain } );
+    if (!nameOfUserInEachVisitInLclStorage) {
+    
+      nameOfUserInEachVisitInLclStorage = prompt("What is your name?: ");
+
+      
+      localStorage.setItem("nameOfUserInEachVisitInLclStorage", nameOfUserInEachVisitInLclStorage);
+    }
+
+    return nameOfUserInEachVisitInLclStorage;
   }
-});
+
+  var welcome;
+
+  var date = new Date();
+  var hour = date.getHours();
+  var minute = date.getMinutes();
+  var second = date.getSeconds();
+
+  if (minute < 10) {
+    minute = "0" + minute;
+  }
+
+  if (second < 10) {
+    second = "0" + second;
+  }
+
+  if (hour < 12) {
+
+    welcome = "Good morning " + getNameUserONeachVisit();
+  } else if (hour < 17) {
+    welcome = " Good afternoon " + getNameUserONeachVisit();
+  } else {
+    welcome = "Good evening " + getNameUserONeachVisit();
+  }
+
+  document.write("<h2>" + "<font color='red'>" + welcome + "<br></font>" + " " + "Welcome To JAMDO  ATmLocators");
+  document.write("<br>" + "The time is" + " " + hour + ":" + minute + ":" + second);
+
+  window.onbeforeunload = () => {
+    localStorage.removeItem('nameOfUserInEachVisitInLclStorage');
+  }
   
+  function geoFindMe() {
+
+    const status = document.querySelector('#status');
+    const mapLink = document.querySelector('#map-link');
+
+    mapLink.href = '';
+    mapLink.textContent = '';
+
+    function success(position) {
+      const latitude  = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      status.textContent = '';
+      mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+      mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+    }
+
+    function error() {
+      status.textContent = 'Unable to retrieve your location';
+    }
+
+    if(!navigator.geolocation) {
+      status.textContent = 'Geolocation is not supported by your browser';
+    } else {
+      status.textContent = 'Locating…';
+      navigator.geolocation.getCurrentPosition(success, error);
+    }
+
+  }
+
+    document.querySelector('#find-me').addEventListener('click', geoFindMe);  
+
+    

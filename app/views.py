@@ -9,6 +9,7 @@ from app import app
 from flask import render_template, request, redirect, url_for
 
 
+
 ###
 # Routing for your application.
 ###
@@ -23,6 +24,12 @@ def home():
 def about():
     """Render the website's about page."""
     return render_template('about.html')
+
+@app.route('/geo/')
+def geo():
+    """Render the website's location page."""
+    return render_template('permission.html')
+
 
 
 ###
@@ -64,4 +71,4 @@ def page_not_found(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True,host="0.0.0.0",port="8080")
+    app.run(debug=True,host="0.0.0.0",port="8080", ssl_context='adhoc')
