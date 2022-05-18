@@ -7,6 +7,7 @@ This file creates your application.
 
 from app import app
 from flask import render_template, request, redirect, url_for
+import folium
 
 
 
@@ -29,6 +30,10 @@ def about():
 def geo():
     """Render the website's location page."""
     return render_template('permission.html')
+
+@app.route('/maps/')
+def maps():
+    return render_template('map.html')
 
 
 
